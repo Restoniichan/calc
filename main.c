@@ -35,22 +35,20 @@ void main(){
                     stack = stack_push(stack, cur_stack->tail);
                 } else {
                     num_stack *cur_stack;
+                    char cur_sign;
                     if(cmp(a, b)){
-                        char cur_sign = a->num_sign;
+                        cur_sign = a->num_sign;
                         cur_stack = substraction(a, b);
-                        stack = stack_pop(stack);
-                        stack = stack_pop(stack);
-                        stack->num_sign = cur_sign;
                     } else {
+                        cur_sign = b->num_sign;
                         cur_stack = substraction(b, a);
-                        char cur_sign = b->num_sign;
-                        stack = stack_pop(stack);
-                        stack = stack_pop(stack);
-                        stack->num_sign = cur_sign;
                     }
-                        stack->head = cur_stack->head;
-                        stack->num_len = cur_stack->num_len;
-                        stack = stack_push(stack, cur_stack->tail);
+                    stack = stack_pop(stack);
+                    stack = stack_pop(stack);
+                    stack->num_sign = cur_sign;
+                    stack->head = cur_stack->head;
+                    stack->num_len = cur_stack->num_len;
+                    stack = stack_push(stack, cur_stack->tail);
                 }
                 break;
 
@@ -59,16 +57,46 @@ void main(){
                 if(c != '\n'){
                     if(c != 48) stack->num_sign = 0;
                     goto nega;
-                }else{
-
+                } else {
+                    num_stack *a = stack->prev->prev;
+                    num_stack *b = stack->prev;
+                    if(a->num_sign == b->num_sign){
+                        char cur_sign;
+                        num_stack *cur_stack;
+                        if(cmp(a, b)){
+                            cur_sign = a->num_sign;
+                            cur_stack = substraction(a, b);
+                        } else {
+                            cur_sign = !(b->num_sign);
+                            cur_stack = substraction(b, a);
+                        }
+                        stack = stack_pop(stack);
+                        stack = stack_pop(stack);
+                        stack->num_sign = cur_sign;
+                        stack->head = cur_stack->head;
+                        stack->num_len = cur_stack->num_len;
+                        stack = stack_push(stack, cur_stack->tail);
+                    } else {
+                        stack->num_sign = (cmp(a,b)? a->num_sign : !(b->num_sign));
+                        num_stack *cur_stack = addition(a, b);
+                        stack = stack_pop(stack);
+                        stack = stack_pop(stack);
+                        stack->head = cur_stack->head;
+                        stack->num_len = cur_stack->num_len;
+                        stack = stack_push(stack, cur_stack->tail);
+                    }
                 }
                 break;
 
-            //case '*':
-            //    c = getc(stdin);
+            /*case '*':
+                c = getc(stdin);
 
-            //case '/';
-            //    c = getc(stdin);
+                break;
+
+            case '/';
+                c = getc(stdin);
+
+                break;*/
 
             case '=':
                 c = getc(stdin);
