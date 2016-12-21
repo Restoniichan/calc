@@ -126,6 +126,7 @@ num_stack* multi(num_stack *a, num_stack *b){
     a1->num_len = a->num_len + 1;
     b1->tail = (num_node*)malloc(sizeof(num_node));
     b1->num_len = b->num_len - 1;
+
     num_node *cur1 = a->head, *cur2 = b->head;
     while(cur1->next){
         a1->tail->x = cur1->x;
@@ -144,18 +145,17 @@ num_stack* multi(num_stack *a, num_stack *b){
         b1->tail->x = cur2->x;
         b1->tail->next = (num_node*)malloc(sizeof(num_node));
         b1->tail->next->prev = b1->tail;
-        b1->tail = b1->tail->next;
         cur2 = cur2->next;
+        if(cur2->next) b1->tail = b1->tail->next;
     }
 
     b->num_len = 1;
-
-
-    //printf("a) %d, b) %d\n", a->num_len, b->num_len);
 /*
+    //printf("a) %d, b) %d\n", a->num_len, b->num_len);
+
     num_node *out1 = a->head, *out2 = b->head, *out3 = a1->tail, *out4 = b1->tail;
 
-    printf("a) ");
+    printf("\na) ");
     while(as){
         printf("%d", out1->x);
         out1 = out1->next;
@@ -183,4 +183,38 @@ num_stack* multi(num_stack *a, num_stack *b){
 */
 
     return addit(multi(a1, b1), multi(a, b));
+}
+
+num_stack* divis(num_stack *a, num_stack *b){
+    if(cmp(b, a)){
+        num_stack *out = (num_stack*)malloc(sizeof(num_stack));
+        out->head = (num_node*)malloc(sizeof(num_node));
+        out->tail = out->head;
+        out->tail->x = 0;
+        out->num_len = 1;
+        return 0;
+    }
+    num_node *head = (num_node*)malloc(sizeof(num_node));
+    head->x = 0;
+    head->next=0;
+    head->prev=0;
+    num_stack *out = (num_stack*)malloc(sizeof(num_stack));
+    out->head = (num_node*)malloc(sizeof(num_node));
+    out->tail = head;
+    out->num_len = 1;
+    while(cmp(a, b)){
+        a = subst(a, b);
+        head->x += 1;
+        if(head->x > 9){
+            head->x = 0;
+            head->prev = (num_node*)malloc(sizeof(num_node));
+            head->prev->next = head;
+            head = head->prev;
+            head->x = 1;
+            out->num_len += 1;
+        }
+    }
+    out->head = head;
+
+    return out;
 }

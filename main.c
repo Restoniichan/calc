@@ -109,10 +109,21 @@ void main(){
 
                 break;
 
-            /*case '/';
+            case '/';
                 c = getc(stdin);
+                num_stack *x = stack->prev->prev;
+                num_stack *z = stack->prev;
+                char cur_sign = (x->num_sign == z->num_sign);
+                num_stack *cur_stack = divis(x, z);
+            
+                stack = stack_pop(stack);
+                stack = stack_pop(stack);
+                stack->num_sign = cur_sign;
+                stack->head = cur_stack->head;
+                stack->num_len = cur_stack->num_len;
+                stack = stack_push(stack, cur_stack->tail);
 
-                break;*/
+                break;
 
             case '=':
                 c = getc(stdin);
