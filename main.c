@@ -24,9 +24,9 @@ void main(){
                 if(a->num_sign == b->num_sign){
                     num_stack *cur_stack;
                     if(cmp(a, b))
-                        cur_stack = addition(a, b);
+                        cur_stack = addit(a, b);
                     else
-                        cur_stack = addition(b, a);
+                        cur_stack = addit(b, a);
                     stack = stack_pop(stack);
                     stack = stack_pop(stack);
                     if(a->num_sign == 0) stack->num_sign = 0;
@@ -38,10 +38,10 @@ void main(){
                     char cur_sign;
                     if(cmp(a, b)){
                         cur_sign = a->num_sign;
-                        cur_stack = substraction(a, b);
+                        cur_stack = subst(a, b);
                     } else {
                         cur_sign = b->num_sign;
-                        cur_stack = substraction(b, a);
+                        cur_stack = subst(b, a);
                     }
                     stack = stack_pop(stack);
                     stack = stack_pop(stack);
@@ -65,10 +65,10 @@ void main(){
                         num_stack *cur_stack;
                         if(cmp(a, b)){
                             cur_sign = a->num_sign;
-                            cur_stack = substraction(a, b);
+                            cur_stack = subst(a, b);
                         } else {
                             cur_sign = !(b->num_sign);
-                            cur_stack = substraction(b, a);
+                            cur_stack = subst(b, a);
                         }
                         stack = stack_pop(stack);
                         stack = stack_pop(stack);
@@ -77,10 +77,11 @@ void main(){
                         stack->num_len = cur_stack->num_len;
                         stack = stack_push(stack, cur_stack->tail);
                     } else {
-                        stack->num_sign = (cmp(a,b)? a->num_sign : !(b->num_sign));
-                        num_stack *cur_stack = addition(a, b);
+                        char cur_sign = (cmp(a,b)? a->num_sign : !(b->num_sign));
+                        num_stack *cur_stack = addit(a, b);
                         stack = stack_pop(stack);
                         stack = stack_pop(stack);
+                        stack->num_sign = cur_sign;
                         stack->head = cur_stack->head;
                         stack->num_len = cur_stack->num_len;
                         stack = stack_push(stack, cur_stack->tail);
@@ -88,12 +89,27 @@ void main(){
                 }
                 break;
 
-            /*case '*':
+            case '*':
                 c = getc(stdin);
+                num_stack *x = stack->prev->prev;
+                num_stack *z = stack->prev;
+                char cur_sign = (x->num_sign == z->num_sign);
+                num_stack *cur_stack;
+
+                if(cmp(x, z))
+                    cur_stack = multi(x, z);
+                else
+                    cur_stack = multi(z, x);
+                stack = stack_pop(stack);
+                stack = stack_pop(stack);
+                stack->num_sign = cur_sign;
+                stack->head = cur_stack->head;
+                stack->num_len = cur_stack->num_len;
+                stack = stack_push(stack, cur_stack->tail);
 
                 break;
 
-            case '/';
+            /*case '/';
                 c = getc(stdin);
 
                 break;*/
@@ -106,7 +122,7 @@ void main(){
                 }
                 num_node *out = stack->prev->head;
                 if(stack->prev->num_sign == 0) printf("-");
-                while(out->next != 0){
+                while(out->next){
                     printf("%d", out->x);
                     out = out->next;
                 }
